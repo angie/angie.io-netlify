@@ -36,7 +36,8 @@ const Hero = () => {
             max-width: ${rhythm(15)};
           `}
         >
-          Your blog says the things you want to say.
+          Angie Merryweather. Writing about React, Node.js and developer
+          tooling.
         </h1>
       </Container>
       <div
@@ -57,7 +58,7 @@ const Description = styled.p`
 export default function Index({ data: { site, allMdx } }) {
   const theme = useTheme()
   return (
-    <Layout site={site}>
+    <Layout site={site} noSubscribeForm>
       <Hero />
       <Container
         css={css`
