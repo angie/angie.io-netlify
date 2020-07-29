@@ -1,0 +1,62 @@
+---
+slug: using-eslint-in-a-lerna-mono-repo
+date: 2020-07-29
+title: 'Using ESLint in a Lerna monorepo: Create React App frontend with Azure functions and TypeScript'
+description: 'How to set up ESLint in a Lerna monorepo mixing JavaScript and TypeScript.'
+published: true
+author: 'Angie Merryweather'
+# banner: './banner.png'
+---
+
+Along with [Jest](https://jestjs.io/) for testing, [ESLint](https://eslint.org/) and [Prettier](https://prettier.io/) are the first packages I install on any React or Node.js project. Making use of [smart](https://github.com/airbnb/javascript) [people's](https://github.com/ts-engine/ts-engine/blob/master/packages/eslint-config/index.js) [shared](https://github.com/sindresorhus/eslint-plugin-unicorn) [config](https://github.com/kentcdodds/eslint-config-kentcdodds) makes set up even easier and less opinionated, so it had been a while since I experienced any problems with configuration and IDE support. I hope that documenting the problems I encountered and the steps taken to resolve them will save someone from the day of tabbing back and forth between GitHub issues I enjoyed!
+
+# A tiny bit of background
+
+We started out with a client-side [Create React App](https://github.com/facebook/create-react-app) project and migrated to a [Lerna monorepo](https://github.com/lerna/lerna) to support a backend composed of [Azure functions](https://docs.microsoft.com/en-us/azure/azure-functions/).
+
+```markdown
+// CRA-powered SPA folder structure
+frontend
+├── .eslintrc.json
+├── .prettierrc
+├── package.json
+├── public
+│   ├── favicon.ico
+│   ├── index.html
+│   ├── manifest.json
+├── src
+│   ├── **mocks**
+│   ├── **tests**
+│   ├── api
+│   ├── components
+│   ├── index.jsx
+│   ├── serviceWorker.js
+│   └── setupTests.js
+├── static.json
+└── yarn.lock
+
+// new Lerna monorepo
+monorepo
+├── .eslintrc.js
+├── .prettierrc
+├── .vscode
+│   └── settings.json
+├── lerna.json
+├── package-lock.json
+├── package.json
+└──packages
+   ├── backend
+   └── frontend // CRA app lives in here now!
+```
+
+# Adding ESLint to the root package
+
+Installing ESLint in the root package has two benefits:
+
+## 1. Allows us to make use of ESLint's [configuration cascading and hierarchy](https://eslint.org/docs/user-guide/configuring#configuration-cascading-and-hierarchy)
+
+We can declare a root config and override or add to it where necessary in child packages. For example, `packages/frontend` uses `eslint-plugin-jsx-a11y` to guard against a11y issues, but our Azure functions don't need this protection.
+
+## 2. Support for VS Code integration
+
+I found that the [VS Code ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) plugin worked much better with this setup.
